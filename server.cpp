@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
         // pthread_create(&t_id, NULL, handle_clnt,(void*) &clnt_sock);
 
         // pthread_detach(t_id);
-        std::cout << "Connected client IP: " << inet_ntoa(clnt_addr.sin_addr);
+        std::cout << "Connected client IP: " << inet_ntoa(clnt_addr.sin_addr) << std::endl;
         // std::cout << "(" << timeLog->tm_year+1900 << "-" 
         // << timeLog->tm_mon + 1 << "-" << timeLog->tm_mday << "-" 
         // << timeLog->tm_hour << "-" << timeLog->tm_min << ")" <<  std::endl;
@@ -144,6 +144,7 @@ unsigned __stdcall handle_clnt(void* arg)
 
     while((str_len=recv(clnt_sock, msg, sizeof(msg),0))!=0)
         send_msg(msg, str_len);
+        send_msg((char*)"hello", 6);
 
     // pthread_mutex_lock(&mutx);
     for(i=0; i<clnt_cnt; i++) //remove disconnected client
@@ -166,7 +167,7 @@ void send_msg(char *msg, int len) // send to all
         int i;
         // pthread_mutex_lock(&mutx);
         for(i=0; i<clnt_cnt; i++)
-                send(clnt_socks[i], msg, len, 0);
+            send(clnt_socks[i], msg, len, 0);
         // pthread_mutex_unlock(&mutx);
 }
 void error_handling(char* msg)
