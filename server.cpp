@@ -67,9 +67,9 @@ int main(int argc, char* argv[]){
         if(HTREDUCE == 0){
             error_handling((char*)"_beginthreadex() error");
         }
-        if((wr=WaitForSingleObject(hThread, INFINITE))==WAIT_FAILED){
-            error_handling((char*)"thread wait error");
-        }
+        // if((wr=WaitForSingleObject(hThread, INFINITE))==WAIT_FAILED){
+        //     error_handling((char*)"thread wait error");
+        // }
         // pthread_mutex_unlock(&mutx);
 
         // pthread_create(&t_id, NULL, handle_clnt,(void*) &clnt_sock);
