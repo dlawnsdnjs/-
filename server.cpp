@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <winsock2.h>
-// #include <pthread.h>
 #include <windows.h>
 #include <process.h>
 #include <stdlib.h>
@@ -20,7 +19,6 @@ void error_handling(char* msg);
 void server_state(char* port);
 int clnt_cnt = 0;
 SOCKET clnt_socks[MAX_CLNT];
-// pthread_mutex_t mutx;
 
 #define PORT 4578
 #define PACKET_SIZE 1024
@@ -37,17 +35,8 @@ int main(int argc, char* argv[]){
     HANDLE hThread;
     DWORD wr;
     unsigned threadID;
-    // pthread_t t_id;
 
     server_state((char*)"4578");
-    // server_state(argv[1]);
-    // if(argc != 2){
-    //     std::cout << "Hello" << std::endl;
-    //     std::cout << "Usage: " << argv[0] << "<port>" << std::endl;
-    //     exit(1);
-    // }
-
-    // pthread_mutex_init(&mutx, NULL);
     serv_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(serv_sock == -1) 
         error_handling((char*)"socket() error");
@@ -55,7 +44,7 @@ int main(int argc, char* argv[]){
     memset(&serv_addr, 0, sizeof(serv_addr));
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     serv_addr.sin_port = htons(PORT);
 
     if(bind(serv_sock, (struct sockaddr*) &serv_addr, sizeof(serv_addr))== -1) 
@@ -66,10 +55,11 @@ int main(int argc, char* argv[]){
 
     while(1){
         clnt_addr_size = sizeof(clnt_addr);
+        std::cout<<" before msg" <<std::endl;
+        
         clnt_sock = accept(serv_sock, (struct sockaddr*) &clnt_addr, &clnt_addr_size);
         if(clnt_sock == -1)
             error_handling((char*)"accept() error");
-        
         // pthread_mutex_lock(&mutx);
         clnt_socks[clnt_cnt++] = clnt_sock;
 
@@ -95,33 +85,6 @@ int main(int argc, char* argv[]){
     WSACleanup();
 
     return 0;
-
-    // SOCKET hListen;
-    // hListen = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-    // SOCKADDR_IN tListenAddr = {};
-    // tListenAddr.sin_family = AF_INET;
-    // tListenAddr.sin_port - htons(PORT);
-    // tListenAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    // bind(hListen, (SOCKADDR*)&tListenAddr, sizeof(tListenAddr));
-    // listen(hListen, SOMAXCONN);
-
-    // SOCKADDR_IN tClntAddr = {};
-    // int iClntSize = sizeof(tClntAddr);
-    // SOCKET hClient = accept(hListen, (SOCKADDR*)&tClntAddr, &iClntSize);
-
-    // char cBuffer[PACKET_SIZE] = {};
-    // recv(hClient,cBuffer, PACKET_SIZE, 0);
-    // printf("Recv Msg: %s\n", cBuffer);
-
-    // char cMsg[] = "Server Send";
-    // send(hClient, cMsg, strlen(cMsg), 0);
-
-    // closesocket(hClient);
-    // closesocket(hListen);
-
-    // return 0;
 }
 
 
@@ -143,8 +106,10 @@ unsigned __stdcall handle_clnt(void* arg)
     char msg[BUF_SIZE];
 
     while((str_len=recv(clnt_sock, msg, sizeof(msg),0))!=0)
-        send_msg(msg, str_len);
-        send_msg((char*)"hello", 6);
+        // send_msg(msg, str_len);
+        // send_msg((char*)"hello", 6);
+        std::cout<< msg <<std::endl;
+
 
     // pthread_mutex_lock(&mutx);
     for(i=0; i<clnt_cnt; i++) //remove disconnected client
