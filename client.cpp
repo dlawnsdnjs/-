@@ -1,19 +1,31 @@
 #include <WinSock2.h>
 #include <iostream>
+#include <thread>
 #pragma comment (lib , "ws2_32.lib")
+
+SOCKET client;
  
 void showError(const char * msg)
 {
-            std ::cout << "error : " << msg << std ::endl;
+            std ::cout << "errr : " << msg << std ::endl;
             exit (-1);
 }
- 
+
+void proc_recv() {
+    while(1){
+        char buff[100] = "";
+        char a;
+        recv(client,buff,100,0);
+        std::cout << "receved message : " << buff << std::endl;
+    }
+}
+
 int main()
 {
     WSADATA data;
     ::WSAStartup( MAKEWORD(2, 2), &data);
 
-    SOCKET client = socket (AF_INET , SOCK_STREAM, IPPROTO_TCP);
+    client = socket (AF_INET , SOCK_STREAM, IPPROTO_TCP);
 
     if (client == INVALID_SOCKET )
         showError ("client" );
@@ -25,10 +37,14 @@ int main()
     addr.sin_port = htons(4578);
     if (connect(client, (sockaddr *)&addr, sizeof(addr)) == SOCKET_ERROR )
         showError ("connect" );
+    
     char msg[100] = "";
     strcat(msg, "hello");
     if(send(client, msg, 6, 0) == SOCKET_ERROR)
         std::cout << "send error" << std::endl;
+    
+    std::thread t1(proc_recv);
+
     int i = 1;
     while(i == 1){
         std::cin >> msg;
@@ -41,10 +57,13 @@ int main()
             std::cout << "send error" << std::endl;
             break;
         }
+        
+        
     }
     std::cout << "end" << std::endl;
-
+    t1.join();
     closesocket (client);
+    
     WSACleanup();
     return 0;
 }

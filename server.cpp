@@ -80,6 +80,10 @@ int main(int argc, char* argv[]){
         // << timeLog->tm_mon + 1 << "-" << timeLog->tm_mday << "-" 
         // << timeLog->tm_hour << "-" << timeLog->tm_min << ")" <<  std::endl;
         std::cout << "chatter (" << clnt_cnt << "/" << MAX_CLNT << ")\n";
+        
+        char buffer[16];
+        strcpy(buffer, "Hello Client ^^");
+		send(clnt_cnt, buffer, 1, 0);
     }
     closesocket(serv_sock);
     WSACleanup();
@@ -105,10 +109,11 @@ unsigned __stdcall handle_clnt(void* arg)
     int str_len=0,i;
     char msg[BUF_SIZE];
 
-    while((str_len=recv(clnt_sock, msg, sizeof(msg),0))!=0)
-        // send_msg(msg, str_len);
+    while((str_len=recv(clnt_sock, msg, sizeof(msg),0))!=0){
+        send_msg(msg, str_len);
         // send_msg((char*)"hello", 6);
         std::cout<< msg <<std::endl;
+    }
 
 
     // pthread_mutex_lock(&mutx);
@@ -134,6 +139,8 @@ void send_msg(char *msg, int len) // send to all
         for(i=0; i<clnt_cnt; i++)
             send(clnt_socks[i], msg, len, 0);
         // pthread_mutex_unlock(&mutx);
+        std::cout << "sended" << std::endl;
+
 }
 void error_handling(char* msg)
 {
