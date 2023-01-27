@@ -32,8 +32,13 @@ int main()
 
     sockaddr_in addr = { 0 };
     memset(&addr, 0, sizeof(addr));
+    char tmp[15];
+    std::cout << "ip please : ";
+    std::cin >> tmp;
+    const char * ip = tmp;
     addr.sin_family = AF_INET;
-    addr.sin_addr. s_addr =inet_addr("127.0.0.1");
+    addr.sin_addr. s_addr =inet_addr(ip);
+    std::cout <<"connecting to "<< ip << std::endl;
     addr.sin_port = htons(4578);
     if (connect(client, (sockaddr *)&addr, sizeof(addr)) == SOCKET_ERROR )
         showError ("connect" );
