@@ -1,61 +1,80 @@
 #include <string>
 #include <cstring>
+#include <sstream>
+#include <iostream>
+#include <vector>
+using namespace std;
 
 class Packet{
     protected:
-    std::string type;
+    string type;
     public:
-    Packet(std::string type){
+    Packet(string type){
         this->type = type;
     }
-    std::string getPacket(){
+    string getPacket(){
         return type;
     }
 };
 
 class loginPacket : public Packet{
     private:
-    std::string ID;
-    std::string PW;
+    string ID;
+    string PW;
     public:
-    loginPacket(std::string ID, std::string PW):Packet("Login"){
+    loginPacket(string ID, string PW):Packet("Login"){
         this->ID = ID;
         this->PW = PW;
     }
-    std::string getPacket(){
-        std::string packet = type + "#" + ID + "#" + PW;
+    string getPacket(){
+        string packet = type + "#" + ID + "#" + PW;
         return packet;
     }
 };
 
 class registerPacket : public Packet{
     private:
-    std::string ID;
-    std::string PW;
-    std::string NICK;
+    string ID;
+    string PW;
+    string NICK;
     public:
-    registerPacket(std::string ID, std::string PW, std::string NICK): Packet("Register"){
+    registerPacket(string ID,string PW, string NICK): Packet("Register"){
         this->ID = ID;
         this->PW = PW;
         this->NICK = NICK;
     }
-    std::string getPacket(){
-        std::string packet = type + "#" + ID + "#" + PW + "#" + NICK;
+    string getPacket(){
+        string packet = type + "#" + ID + "#" + PW + "#" + NICK;
         return packet;
     }
 };
 
 class messagePacket : public Packet{
     private:
-    std::string NICK;
-    std::string text;
+    string NICK;
+    string text;
     public:
-    messagePacket(std::string NICK, std::string text):Packet("message"){
+    messagePacket(string NICK, string text):Packet("message"){
         this->NICK = NICK;
         this->text = text;
     }
-    std::string getPacket(){
-        std::string packet = type + "#" + text;
+    string getPacket(){
+        string packet = type + "#" +NICK+"#"+ text;
         return packet;
     }
 };
+
+
+vector<string> split(string input, char delimiter) {
+    vector<string> result;
+    stringstream ss(input);
+    string tmp;
+ 
+    while (getline(ss, tmp, delimiter)) result.push_back(tmp);
+ 
+    return result;
+}
+
+vector<string> packetsplit(string input){
+    return split(input, '#');
+}
