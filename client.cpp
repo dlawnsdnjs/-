@@ -11,7 +11,7 @@ void showError(const char * msg)
             exit (-1);
 }
 
-void proc_recv() {
+void proc_recv(void* arg) {
     while(1){
         char buff[100] = "";
         char a;
@@ -22,6 +22,7 @@ void proc_recv() {
 
 int main()
 {
+    HANDLE rThread;
     WSADATA data;
     ::WSAStartup( MAKEWORD(2, 2), &data);
 
@@ -48,8 +49,7 @@ int main()
     if(send(client, msg, 6, 0) == SOCKET_ERROR)
         std::cout << "send error" << std::endl;
     
-    std::thread t1(proc_recv);
-
+    rThread = (HANDLE)_beginthread(proc_recv,0,0);
     int i = 1;
     while(i == 1){
         std::cin >> msg;
@@ -66,9 +66,7 @@ int main()
         
     }
     std::cout << "end" << std::endl;
-    t1.join();
     closesocket (client);
-    
     WSACleanup();
     return 0;
 }
