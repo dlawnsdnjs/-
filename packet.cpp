@@ -64,6 +64,23 @@ class messagePacket : public Packet{
     }
 };
 
+class respondPacket : public Packet{
+    private:
+    bool state;
+    public:
+    respondPacket(bool state):Packet("respond"){
+        this->state = state;
+    }
+    string getPacket(){
+        string packet = type + "#";
+        if(state){
+            packet += "true";
+        }else{
+            packet += "false";
+        }
+        return packet;
+    }
+}
 
 vector<string> split(string input, char delimiter) {
     vector<string> result;
