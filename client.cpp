@@ -1,5 +1,6 @@
-#include <WinSock2.h>
+#include <winsock2.h>
 #include <iostream>
+#include <process.h>
 #include <thread>
 #pragma comment (lib , "ws2_32.lib")
 
@@ -11,12 +12,12 @@ void showError(const char * msg)
             exit (-1);
 }
 
-void proc_recv(void* arg) {
+void __cdecl proc_recv(void* arg) {
     while(1){
         char buff[100] = "";
         char a;
         recv(client,buff,100,0);
-        std::cout << "receved message : " << buff << std::endl;
+        std::cout << "recieved message : " << buff << std::endl;
     }
 }
 
@@ -51,6 +52,7 @@ int main()
     
     rThread = (HANDLE)_beginthread(proc_recv,0,0);
     int i = 1;
+
     while(i == 1){
         std::cin >> msg;
         if(strcmp(msg ,"q")==0 ){

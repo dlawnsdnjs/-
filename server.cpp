@@ -60,25 +60,13 @@ int main(int argc, char* argv[]){
         clnt_sock = accept(serv_sock, (struct sockaddr*) &clnt_addr, &clnt_addr_size);
         if(clnt_sock == -1)
             error_handling((char*)"accept() error");
-        // pthread_mutex_lock(&mutx);
         clnt_socks[clnt_cnt++] = clnt_sock;
 
         hThread = (HANDLE)_beginthreadex(NULL, 0,handle_clnt, (void*) &clnt_sock, 0, &threadID);
         if(HTREDUCE == 0){
             error_handling((char*)"_beginthreadex() error");
         }
-        // if((wr=WaitForSingleObject(hThread, INFINITE))==WAIT_FAILED){
-        //     error_handling((char*)"thread wait error");
-        // }
-        // pthread_mutex_unlock(&mutx);
-
-        // pthread_create(&t_id, NULL, handle_clnt,(void*) &clnt_sock);
-
-        // pthread_detach(t_id);
         std::cout << "Connected client IP: " << inet_ntoa(clnt_addr.sin_addr) << std::endl;
-        // std::cout << "(" << timeLog->tm_year+1900 << "-" 
-        // << timeLog->tm_mon + 1 << "-" << timeLog->tm_mday << "-" 
-        // << timeLog->tm_hour << "-" << timeLog->tm_min << ")" <<  std::endl;
         std::cout << "chatter (" << clnt_cnt << "/" << MAX_CLNT << ")\n";
         
         char buffer[16];
@@ -96,7 +84,7 @@ void server_state(char* port)
 {
     using std::cout;
     using std::endl;
-    using std::string;
+    using std:: ;
     cout << "Server Port : " << port << endl;
     cout << "Server State : " << clnt_cnt << " / " << MAX_CLNT << endl;
     cout << endl;
@@ -135,10 +123,8 @@ unsigned __stdcall handle_clnt(void* arg)
 void send_msg(char *msg, int len) // send to all
 {
         int i;
-        // pthread_mutex_lock(&mutx);
         for(i=0; i<clnt_cnt; i++)
             send(clnt_socks[i], msg, len, 0);
-        // pthread_mutex_unlock(&mutx);
         std::cout << "sended" << std::endl;
 
 }
