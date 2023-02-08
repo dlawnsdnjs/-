@@ -80,7 +80,7 @@ class respondPacket : public Packet{
         }
         return packet;
     }
-}
+};
 
 vector<string> split(string input, char delimiter) {
     vector<string> result;
